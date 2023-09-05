@@ -1,0 +1,92 @@
+@startuml ReservaSpace
+
+entity "User" as user {
+  + id : int
+  - name : string
+  - firstName : string
+  - email : string
+  - password : string
+  + isAdmin : bool
+  - orders : collection
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+entity "Room" as room {
+  + id : int
+  - name : string
+  - capacity : int
+  - description : string
+  - price : int
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+  - categoryId : int
+  - pictures : collection
+}
+
+entity "Reservation" as reservation {
+  + id : int
+  - price : int
+  + idRoom : int
+  + dates : collection
+  - createdAt : timestamp
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+entity "Date" as date {
+  + id : int
+  - date : date
+  - morning : bool
+  - afternoon : bool
+}
+
+entity "Order" as order {
+  + id : int
+  - createdAt : timestamp
+  - total : int
+  - reservation : collection
+  + state : string
+  - userId: int
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+entity "Picture" as picture {
+  + id : int
+  - createdAt : timestamp
+  - name : string
+  - slug : string
+  - description : string
+  - path : string
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+entity "Category" as category {
+  + id : int
+  - createdAt : timestamp
+  - name : string
+  - description : string
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+entity "Payment" as payment{
+  + id : int
+  - stripeKey: string
+  - orderId : int
+  - createdAt : timestamp
+  - updatedAt : timestamp
+  - deletedAt : timestamp
+}
+
+order -- reservation : "Contain one or many"
+user -- reservation : "DO"
+room -- reservation : "Concern"
+date -- reservation : "Is due to"
+picture <-- room : "Contain one or many"
+' room -- category : "Belongs to"
+room <-- category : "Contain one or many"
+
+@enduml
