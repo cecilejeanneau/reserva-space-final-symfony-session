@@ -9,6 +9,9 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/doctrine-bundle": "^2.10",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/orm": "^2.16",
         "easycorp/easyadmin-bundle": "^4.6.0",
         "fakerphp/faker": "^1.23",
         "stripe/stripe-php": "^12.1",
@@ -20,6 +23,7 @@
         "symfony/mailer": "6.3.*",
         "symfony/messenger": "6.3.*",
         "symfony/runtime": "6.3.*",
+        "symfony/security-bundle": "6.3.*",
         "symfony/webpack-encore-bundle": "^2.0",
         "symfony/yaml": "6.3.*"
     },
@@ -70,5 +74,8 @@
             "allow-contrib": false,
             "require": "6.3.*"
         }
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.50"
     }
 }

@@ -2,12 +2,13 @@
 
 entity "User" as user {
   + id : int
-  - name : string
+  - lastName : string
   - firstName : string
   - email : string
   - password : string
   + isAdmin : bool
   - orders : collection
+  - createdAt : timestamp
   - updatedAt : timestamp
   - deletedAt : timestamp
 }
@@ -18,6 +19,7 @@ entity "Room" as room {
   - capacity : int
   - description : string
   - price : int
+  - createdAt : timestamp
   - updatedAt : timestamp
   - deletedAt : timestamp
   - categoryId : int
@@ -27,11 +29,12 @@ entity "Room" as room {
 entity "Reservation" as reservation {
   + id : int
   - price : int
-  + idRoom : int
+  + roomId : int
   + dates : collection
   - createdAt : timestamp
   - updatedAt : timestamp
   - deletedAt : timestamp
+  - orderId : int
 }
 
 entity "Date" as date {
@@ -45,7 +48,7 @@ entity "Order" as order {
   + id : int
   - createdAt : timestamp
   - total : int
-  - reservation : collection
+  - reservations : collection
   + state : string
   - userId: int
   - updatedAt : timestamp
