@@ -9,8 +9,8 @@
 </style>
 
 
-<div class="example-wrapper">
-    <h1>Bienvenue chez Reserva Space !</h1>
+<div class="example-wrapper flex flex-col gap-4">
+    <h1 class='text-center text-2xl font-bold'>Bienvenue chez Reserva Space !</h1>
 
     <h2>Liste de nos espaces proposés à la réservation : </h2>
 
@@ -21,47 +21,15 @@
                 <p class="text-gray-600">{{ room.description }}</p>
                 <ul class="mt-2">
                     <li><strong>Capacity:</strong> {{ room.capacity }}</li>
-                    <li><strong>Price:</strong> {{ room.price }}</li>
+                    <li><strong>Price:</strong> {{ room.price }} € la demi-journée</li>
                     <li><strong>Category:</strong> {{ room.categoryId }}</li>
                 </ul>
-                <!-- Add any actions buttons here -->
-                {# <button class='border border-darker rounded-full p-2'>Ajouter la réservation au panier</button> #}
                 <a href='{{ path('app_room_show', {'id': room.id}) }}' class='text-center border border-darker rounded-full p-2'>Choisir ma réservation</a>
             </div>
         {% else %}
             <p class="text-xl text-gray-500">Aucun espace disponible</p>
         {% endfor %}
     </div>
-
-    {# <table class="flex flex-col">
-        <thead class='flex flex-col'>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Capacity</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>CategoryId</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for room in rooms %}
-            <tr>
-                <td>{{ room.id }}</td>
-                <td>{{ room.name }}</td>
-                <td>{{ room.capacity }}</td>
-                <td>{{ room.description }}</td>
-                <td>{{ room.price }}</td>
-                <td>{{ room.categoryId }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">Aucun espace disponible</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table> #}
 
 </div>
 {% endblock %}

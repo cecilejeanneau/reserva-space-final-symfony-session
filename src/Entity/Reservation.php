@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReservationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
@@ -17,9 +18,6 @@ class Reservation
     private ?float $price = null;
 
     #[ORM\Column]
-    private ?int $roomId = null;
-
-    #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -30,7 +28,17 @@ class Reservation
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $orderId = null;
+    private ?Order $order = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $period = null;
+
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Room $room = null;
 
     public function getId(): ?int
     {
@@ -45,18 +53,6 @@ class Reservation
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function getRoomId(): ?int
-    {
-        return $this->roomId;
-    }
-
-    public function setRoomId(int $roomId): static
-    {
-        $this->roomId = $roomId;
 
         return $this;
     }
@@ -97,14 +93,50 @@ class Reservation
         return $this;
     }
 
-    public function getOrderId(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->orderId;
+        return $this->order;
     }
 
-    public function setOrderId(?Order $orderId): static
+    public function setOrder(?Order $order): static
     {
-        $this->orderId = $orderId;
+        $this->order = $order;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getPeriod(): ?string
+    {
+        return $this->period;
+    }
+
+    public function setPeriod(string $period): static
+    {
+        $this->period = $period;
+
+        return $this;
+    }
+
+    public function getRoom(): ?Room
+    {
+        return $this->room;
+    }
+
+    public function setRoom(?Room $room): static
+    {
+        $this->room = $room;
 
         return $this;
     }

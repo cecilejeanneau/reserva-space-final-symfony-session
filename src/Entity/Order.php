@@ -22,14 +22,14 @@ class Order
     #[ORM\Column]
     private ?float $total = null;
 
-    #[ORM\OneToMany(mappedBy: 'orderId', targetEntity: Reservation::class)]
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: Reservation::class)]
     private Collection $reservations;
 
     #[ORM\Column(length: 255)]
-    private ?string $state = null;
+    private ?string $state = 'pending...';
 
     #[ORM\Column]
-    private ?int $userId = null;
+    private ?int $userId = 1;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -87,7 +87,7 @@ class Order
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations->add($reservation);
-            $reservation->setOrderId($this);
+            $reservation->setOrder($this);
         }
 
         return $this;
@@ -97,8 +97,8 @@ class Order
     {
         if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
-            if ($reservation->getOrderId() === $this) {
-                $reservation->setOrderId(null);
+            if ($reservation->getOrder() === $this) {
+                $reservation->setOrder(null);
             }
         }
 

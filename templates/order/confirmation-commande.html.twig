@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de la commande{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mt-5">Confirmation de la commande</h1>
+        <p>Merci pour votre commande !</p>
+        <p>Votre commande a été enregistrée avec succès.</p>
+        <p>Vous trouverez ci-dessous les détails de votre commande :</p>
+
+        <h2>Récapitulatif de la commande :</h2>
+        <ul>
+            <li>Numéro de commande : {{ order.id }}</li>
+            <li>Date de commande : {{ order.createdAt|date('Y-m-d H:i:s') }}</li>
+            <li>Total de la commande : {{ order.total }} €</li>
+        </ul>
+
+        <h2>Réservations :</h2>
+        <ul>
+            {% for reservation in order.reservations %}
+            <p>{{reservation.period}}</p>
+                <li>
+                    Réservation pour l'espace "{{ reservation.room.name }}" le {{ reservation.date|date('Y-m-d') }}
+                    ({{ reservation.period }}) - Prix : {{ reservation.price }} €
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p>Un email de confirmation vous sera envoyé sous peu.</p>
+
+        <p><a href="{{ path('app_home') }}">Retour à la liste des espaces</a></p>
+    </div>
+{% endblock %}

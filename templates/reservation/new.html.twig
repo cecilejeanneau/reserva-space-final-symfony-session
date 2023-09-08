@@ -1,0 +1,9 @@
+{# {% block title %}Nouvelle réservation{% endblock %} #}
+
+{% block body %}
+    <div class='bg-darker max-w-xl self-center rounded-xl flex flex-col gap-6'>
+        <h1 class='mt-2 text-center text-white'>Choisir ma réservation</h1>
+
+        {{ include('reservation/_form.html.twig') }}
+    </div>
+{% endblock %}

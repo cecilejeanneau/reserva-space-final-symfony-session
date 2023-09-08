@@ -35,14 +35,16 @@ entity "Reservation" as reservation {
   - updatedAt : timestamp
   - deletedAt : timestamp
   - orderId : int
+  - date : datetime
+  - period : string
 }
 
-entity "Date" as date {
-  + id : int
-  - date : date
-  - morning : bool
-  - afternoon : bool
-}
+' entity "Date" as date {
+'   + id : int
+'   - date : date
+'   - morning : bool
+'   - afternoon : bool
+' }
 
 entity "Order" as order {
   + id : int
@@ -87,7 +89,7 @@ entity "Payment" as payment{
 order -- reservation : "Contain one or many"
 user -- reservation : "DO"
 room -- reservation : "Concern"
-date -- reservation : "Is due to"
+' date -- reservation : "Is due to"
 picture <-- room : "Contain one or many"
 ' room -- category : "Belongs to"
 room <-- category : "Contain one or many"

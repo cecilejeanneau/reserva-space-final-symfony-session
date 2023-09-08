@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CartController!{% endblock %}
+{% block title %}Votre panier{% endblock %}
 
 {% block body %}
 <style>
@@ -8,13 +8,35 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/cecil/Documents/projects/Symfony/reserva-space/reserva_space_final_symfony_session/src/Controller/CartController.php'|file_link(0) }}">src/Controller/CartController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/cecil/Documents/projects/Symfony/reserva-space/reserva_space_final_symfony_session/templates/cart/index.html.twig'|file_link(0) }}">templates/cart/index.html.twig</a></code></li>
-    </ul>
+<div class="example-wrapper flex flex-col gap-12">
+    <h1 class='text-xl text-center font-bold'>Votre panier reserva Space</h1>
+
+    <h2>Liste de vos réservations : </h2>
+
+    <div class="grid grid-cols-2 gap-4">
+        {% for reservation in cart %}
+            <div class="p-4 border border-gray-300 rounded-lg flex flex-col gap-4">
+                <h2 class="text-xl font-semibold">Prix de la réservation : {{ reservation.price }}</h2>
+                <p class="text-gray-600">
+                    pour le : 
+                    {{ reservation.date|date('Y-m-d') }}
+                </p>
+                <ul class="mt-2">
+                    <li><strong>Période : </strong> {{ reservation.periode }}</li>
+                    <li><strong>Espace : </strong> {{ reservation.roomName }}</li>
+                </ul>
+                <a href='{{ path('remove', {'id': loop.index}) }}' class='text-center border border-darker rounded-full p-2'>Supprimer ma réservation</a>
+            </div>
+        {% else %}
+            <p class="text-xl text-gray-500">Votre panier est vide !</p>
+        {% endfor %}
+    </div>
+    
+    <div class='flex flex-row gap-4'>
+        <a href='{{ path('delete_cart') }}' class='bg-secondary text-white text-center border rounded-full p-2 max-w-xs'>Vider mon panier</a>
+        <a href='{{ path('validate_cart') }}' class='text-center border border-darker rounded-full p-2 max-w-xs'>Valider mon panier</a>
+    </div>
+
 </div>
 {% endblock %}

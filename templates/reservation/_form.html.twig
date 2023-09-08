@@ -1,0 +1,19 @@
+{{ form_start(form, {'attr': {'class': 'flex flex-col gap-8 bg-darker'}}) }}
+
+    {{ form_row(form.date, {
+        'label': 'Date',
+        'label_attr': {'class': ' px-4 text-white'},
+        'attr': {'class': 'rounded ml-2 text-grey-200 px-3'}
+    }) }}
+    {{ form_row(form.period, {
+        'label': 'Période',
+        'label_attr': {'class': ' px-4 text-white'},
+        'attr': {'class': 'rounded ml-2 text-grey-200 p-2 mr-4'}
+    }) }}
+
+
+    <div class='w-full bg-white flex items-center flex-row'>
+        <button class="bg-secondary rounded-full mx-auto p-2 mt-4 text-white">{{ button_label|default('Ajouter au panier') }}</button>
+    </div>
+    
+{{ form_end(form) }}
