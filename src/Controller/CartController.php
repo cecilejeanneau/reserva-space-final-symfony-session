@@ -4,11 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\Reservation;
-use App\Entity\Room;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -80,122 +79,58 @@ class CartController extends AbstractController
     #[Route('/panier/valider', name: 'validate_cart')]
     public function validate(SessionInterface $session, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
     {
-        // Récupérez les réservations depuis la session
+        Stripe::setApiKey('STRIPE_SECRET_KEY');
         $cart = $session->get('cart', []);
 
-        // Créez une nouvelle commande
         $order = new Order();
         $order->setCreatedAt(new \DateTimeImmutable());
-        $order->setTotal(0); // Vous devrez calculer le total en fonction des réservations
+        $order->setTotal(0);
 
-        //$reservations = [];
+        $lineItems = [];
 
-
-        // Bouclez sur les réservations du panier
         foreach ($cart as $reservationData) {
             $reservation = new Reservation();
 
-            // La salle ! identifiant de la salle
-            // new Salle avec l'id puis ajout à la réservation
-            // on  ajoute les propriété de la résa
             $reservation->setPrice($reservationData['price']);
-            // $reservation->setRoom($reservationData['room']);
             $reservation->setDate($reservationData['date']);
             $reservation->setPeriod($reservationData['periode']);
             $reservation->setCreatedAt(new \DateTimeImmutable());
 
-            // Ajout de la room
             $room = $roomRepository->find($reservationData['room']->getId());
             $reservation->setRoom($room);
-            //dd($reservationData['room']);
-            //$reservation->setRoom()
-            // ... Set other reservation properties
-
-            // $reservationData['room']->addReservation($reservation);
-            // $reservations[] = $reservation;
-
-            // Associez la réservation à la commande
             $order->addReservation($reservation);
 
-            // Mettez à jour le total de la commande
             $order->setTotal($order->getTotal() + $reservation->getPrice());
 
-            // Enregistrez la réservation dans la base de données
             $entityManager->persist($reservation);
+
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => $reservationData['roomName'],
+                    ],
+                    'unit_amount' => $reservationData['price'] * 100,
+                ],
+                'quantity' => 1,
+            ];
         }
 
-        // Enregistrez la commande dans la base de données
         $entityManager->persist($order);
         $entityManager->flush();
 
-        // Videz le panier
         $session->set('cart', []);
 
-       /*  $roomRepository = $entityManager->getRepository(Room::class);
-        foreach ($reservations as $reservation) {
-            $room = $roomRepository->find($reservation->getRoomId());
-            $roomName = $room->getName();
-            if ($room) {
-                // Mettez à jour la réservation avec le nom de la salle
-                $reservation['roomName'] = $roomName;
-            }
-        } */
+        $session = \Stripe\Checkout\Session::create([
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => 'http://127.0.0.1:8000/checkout_success',
+            'cancel_url' => 'http://127.0.0.1:8000/checkout_error'
+        ]);
 
-        // Redirigez vers une page de confirmation ou une autre page appropriée
-
-        return $this->redirectToRoute('app_order', ['id'=>$order->getId()]);
-       /*  return $this->render('cart/confirmation-commande.html.twig', [
-            'order' => $order
-            //'reservations' => $reservations
-        ]); */
+        return $this->redirect($session->url, 303);
+        // return $this->redirectToRoute('app_order', ['id'=>$order->getId()]);
     }
-
-    // #[Route('/panier/confirmation-commande', name: 'order_confirmation')]
-    // public function orderConfirmation(SessionInterface $session): Response
-    // {
-    //     // 1. Récupérez les détails de la commande depuis la session
-    //     $cart = $session->get('cart', []);
-
-    //     // 2. Initialisez des variables pour stocker les détails de la commande et le montant total
-    //     $orderDetails = [];
-    //     $totalAmount = 0.0;
-
-    //     // 3. Parcourez les éléments du panier pour construire les détails de la commande
-    //     foreach ($cart as $item) {
-    //         // Calculez le montant total pour cet élément
-    //         $itemTotal = $item['price'];
-            
-    //         // Ajoutez cet élément aux détails de la commande
-    //         $orderDetails[] = [
-    //             'price' => $item['price'],
-    //             'roomId' => $item['roomId'],
-    //             'date' => $item['date']->format('Y-m-d'),
-    //             'periode' => $item['periode'],
-    //             'total' => $itemTotal,
-    //         ];
-
-    //         // Ajoutez le montant total de cet élément au montant total de la commande
-    //         $totalAmount += $itemTotal;
-    //     }
-
-    //     // 4. Envoyez les détails de la commande et le montant total au modèle Twig
-    //     return $this->render('cart/confirmation-commande.html.twig', [
-    //         'orderDetails' => $orderDetails,
-    //         'totalAmount' => $totalAmount,
-    //     ]);
-    // }
-
-    // #[Route('/confirmation-commande', name: 'order_confirmation')]
-    // public function orderConfirmation(): Response
-    // {
-    //     // Vous pouvez ici obtenir les détails de la commande et des réservations
-    //     // à partir de la session ou de votre base de données
-    //     $orderDetails = /* Récupérez les détails de la commande ici */;
-
-    //     return $this->render('cart/order_confirmation.html.twig', [
-    //         'orderDetails' => $orderDetails,
-    //     ]);
-    // }
 
     /**
      * Summary of delete
